@@ -1,0 +1,57 @@
+-- GUI
+local ScreenGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+ScreenGui.Name = "LacoGui"
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 200, 0, 120)
+Frame.Position = UDim2.new(0.05, 0, 0.2, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+Frame.Active = true
+Frame.Draggable = true
+
+local TextBox = Instance.new("TextBox", Frame)
+TextBox.Size = UDim2.new(1, -10, 0, 30)
+TextBox.Position = UDim2.new(0, 5, 0, 5)
+TextBox.PlaceholderText = "Nome do jogador"
+
+local Button = Instance.new("TextButton", Frame)
+Button.Size = UDim2.new(1, -10, 0, 40)
+Button.Position = UDim2.new(0, 5, 0, 40)
+Button.Text = "Laçar meu personagem"
+Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Button.TextColor3 = Color3.fromRGB(0, 0, 0)
+
+-- Laçar
+Button.MouseButton1Click:Connect(function()
+	local nome = TextBox.Text
+	local player = game.Players:FindFirstChild(nome)
+	local localPlayer = game.Players.LocalPlayer
+
+	if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") and
+	   localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") then
+
+		local origin = player.Character.HumanoidRootPart
+		local target = localPlayer.Character.HumanoidRootPart
+
+		-- Criação da corda
+		local attachment1 = Instance.new("Attachment", origin)
+		local attachment2 = Instance.new("Attachment", target)
+
+		local rope = Instance.new("RopeConstraint")
+		rope.Attachment0 = attachment1
+		rope.Attachment1 = attachment2
+		rope.Length = 17 -- ✅ AGORA COM 17 METROS
+		rope.Visible = true
+		rope.Thickness = 0.2
+		rope.Parent = origin
+
+		-- Torna o personagem arrastável (menos fricção)
+		local humanoid = localPlayer.Character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.PlatformStand = false
+		end
+
+	else
+		warn("Jogador não encontrado ou personagens inválidos.")
+	end
+end)
